@@ -1,2 +1,2 @@
 pub mod file;
-mod macros;
+pub mod macros;

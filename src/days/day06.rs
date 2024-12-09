@@ -329,7 +329,7 @@ fn parse_input() -> (Position, Grid) {
     let mut rows = vec![Vec::with_capacity(DIM); DIM];
     let mut cols = vec![Vec::with_capacity(DIM); DIM];
     let (mut dim_i, mut dim_j) = (0, 0);
-    for (i, line) in crate::read_input!(06)
+    for (i, line) in read_input!(06)
         .trim()
         .split("\n")
         .map(|line| line.trim())

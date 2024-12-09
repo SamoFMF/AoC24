@@ -50,9 +50,6 @@ fn part1(nodes: &HashMap<u8, Vec<Point>>, dim: Point) -> usize {
     for ps in nodes.values() {
         for i in 0..ps.len() {
             for j in (i + 1)..ps.len() {
-                // NOTE: This assumes that d.0 != 0 && d.1 != 0
-                // Otherwise there would be more than 2 points `p`
-                // for which `d(p,p1) = 2 * d(p,p2)` holds
                 let mut p1 = ps[i];
                 let mut p2 = ps[j];
                 let d = p1 - p2;
