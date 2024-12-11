@@ -1,5 +1,7 @@
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
+
 use hashbrown::HashSet;
+
 use crate::{read_input, Solution, SolutionPair};
 
 pub fn solve() -> SolutionPair {
@@ -9,14 +11,8 @@ pub fn solve() -> SolutionPair {
     (Solution::from(sol1), Solution::from(sol2))
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct Point(i32, i32);
-
-impl Hash for Point {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        state.write_i32((self.0 << 8) | self.1)
-    }
-}
 
 fn parts(map: &Vec<Vec<i8>>) -> (usize, usize) {
     let mut result1 = 0;
@@ -40,7 +36,12 @@ fn count_trails(p: Point, map: &Vec<Vec<i8>>) -> (usize, usize) {
     (nines.len(), trails)
 }
 
-fn count_trails_recursive(prev: i8, p: Point, map: &Vec<Vec<i8>>, nines: &mut HashSet<Point>) -> usize {
+fn count_trails_recursive(
+    prev: i8,
+    p: Point,
+    map: &Vec<Vec<i8>>,
+    nines: &mut HashSet<Point>,
+) -> usize {
     let cur = map[p.0 as usize][p.1 as usize];
     if cur != prev + 1 {
         return 0;
@@ -70,6 +71,11 @@ fn parse_input() -> Vec<Vec<i8>> {
     read_input!(10)
         .trim()
         .split("\n")
-        .map(|line| line.trim().bytes().map(|height| (height - 48) as i8).collect())
+        .map(|line| {
+            line.trim()
+                .bytes()
+                .map(|height| (height - 48) as i8)
+                .collect()
+        })
         .collect()
 }
