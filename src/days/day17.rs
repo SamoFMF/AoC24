@@ -193,10 +193,7 @@ impl From<u64> for Bit {
         match value {
             0 => Self::Zero,
             1 => Self::One,
-            _ => {
-                println!("fail: {value}");
-                panic!("Unsupported!")
-            }
+            _ => panic!("Unsupported!"),
         }
     }
 }
@@ -224,7 +221,6 @@ impl Number {
     }
 
     pub fn combine(&self, other: &Number) -> Result<Number, ()> {
-        // println!("comb:\n\t{self:?}\n\t{other:?}");
         let mut number = self.clone();
         for (i, b) in self.0.iter().enumerate() {
             match b {
