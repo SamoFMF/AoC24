@@ -21,12 +21,24 @@ pub fn solve() -> SolutionPair {
 struct Position(usize, usize);
 
 impl Position {
-    pub fn move_in_dir(&self, direction: Direction) -> Self {
+    pub fn move_in_dir(&self, direction: Direction) -> Option<Self> {
         match direction {
-            Direction::UP => Self(self.0 - 1, self.1),
-            Direction::RIGHT => Self(self.0, self.1 + 1),
-            Direction::DOWN => Self(self.0 + 1, self.1),
-            Direction::LEFT => Self(self.0, self.1 - 1),
+            Direction::UP => {
+                if self.0 > 0 {
+                    Some(Self(self.0 - 1, self.1))
+                } else {
+                    None
+                }
+            }
+            Direction::RIGHT => Some(Self(self.0, self.1 + 1)),
+            Direction::DOWN => Some(Self(self.0 + 1, self.1)),
+            Direction::LEFT => {
+                if self.1 > 0 {
+                    Some(Self(self.0, self.1 - 1))
+                } else {
+                    None
+                }
+            }
         }
     }
 }
@@ -71,18 +83,24 @@ fn part1(mut pos: Position, grid: &Grid) -> (usize, HashSet<Position>) {
     loop {
         let (stop, to_break) = match find_obstacle(pos, dir, &grid) {
             Some(val) => match dir {
-                Direction::UP | Direction::DOWN => (Position(val, pos.1), false),
-                Direction::LEFT | Direction::RIGHT => (Position(pos.0, val), false),
+                Direction::UP | Direction::DOWN => ((val as isize, pos.1  as isize), false), //(Position(val, pos.1), false),
+                Direction::LEFT | Direction::RIGHT => ((pos.0  as isize, val  as isize), false),
             },
             None => match dir {
-                Direction::UP | Direction::DOWN => (Position(grid.dim.0, pos.1), true),
-                Direction::LEFT | Direction::RIGHT => (Position(pos.0, grid.dim.1), true),
+                Direction::UP => ((-1, pos.1  as isize), true),
+                Direction::DOWN => ((grid.dim.0  as isize, pos.1  as isize), true),
+                Direction::LEFT => ((pos.0 as isize, -1), true),
+                Direction::RIGHT => ((pos.0 as isize, grid.dim.1 as isize), true),
             },
         };
 
         loop {
-            let next = pos.move_in_dir(dir);
-            if next == stop {
+            let next = if let Some(next) = pos.move_in_dir(dir) {
+                next
+            } else {
+                break;
+            };
+            if stop.0 > 0 && stop.1 > 0 && next == Position(stop.0 as usize, stop.1 as usize) {
                 break;
             }
 
